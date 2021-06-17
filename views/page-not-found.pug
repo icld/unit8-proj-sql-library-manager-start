@@ -1,0 +1,14 @@
+extends layout
+
+block content
+    nav.nav
+        a(href='/' class='backBtn')
+            span &larr;
+            |  Back
+            
+        h1= error.message 
+        h2  error status #{error.status} 
+    nav.nav
+        a(href='/' class='backBtn')
+            span &larr;
+            |  Back
