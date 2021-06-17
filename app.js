@@ -59,7 +59,7 @@ app.use((err, req, res, next) => {
   } else {
     err.message = err.message || "Something failed!!";
     err.status = err.status || 500;
-    console.log(err.message);
+    console.log(err.message, err.status);
     res.status(500).render("error", { error: err });
   }
   console.log(err.message);
