@@ -1,6 +1,8 @@
 var express = require("express");
 var router = express.Router();
 const Book = require("../models").Book;
+const Sequelize = require("sequelize");
+const { Op } = require("sequelize");
 
 /* Handler function to wrap each route. */
 function asyncHandler(cb) {
@@ -35,9 +37,20 @@ router.get(
 
 router.get(
   "/books",
-  asyncHandler(async (req, res) => {
-    const books = await Book.findAll({ order: [["ID", "ASC"]] });
-    res.render("index", { books });
+  asyncHandler(async (req, res, next) => {
+    const page = req.query.page;
+    !page ? res.redirect("?page=1") : null;
+
+    const books = await Book.findAll({
+      order: [["ID", "ASC"]],
+      offset: (page - 1) * 10,
+      limit: 10,
+    });
+    const results = books.length;
+    console.log(results, page);
+    results < 1
+      ? res.redirect("?page=1")
+      : res.render("index", { books, page });
   })
 );
 
@@ -67,6 +80,31 @@ router.post(
       } else {
         throw error;
       }
+    }
+  })
+);
+
+//search
+router.get(
+  "/books/search",
+  asyncHandler(async (req, res, next) => {
+    const { term } = req.query;
+    console.log(term);
+    const books = await Book.findAll({
+      where: {
+        [Op.or]: [
+          { title: { [Op.like]: "%" + term + "%" } },
+          { author: { [Op.like]: "%" + term + "%" } },
+          { genre: { [Op.like]: "%" + term + "%" } },
+          { year: { [Op.like]: "%" + term + "%" } },
+        ],
+      },
+    });
+    console.log(books);
+    if (books) {
+      res.render("index", { books, term });
+    } else {
+      errorHandler(404, "Could not find your page");
     }
   })
 );
@@ -125,5 +163,14 @@ router.post(
     }
   })
 );
+
+//search?
+
+// app.get("/books/search", (req, res) => {
+
+//   Books.findAll({ where: { title: { [Op.like]: '%' + term + '%' } } })
+//     .then(Books => res.render('index', {Books})
+//   .catch()
+// });
 
 module.exports = router;

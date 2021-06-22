@@ -7,6 +7,8 @@ var logger = require("morgan");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 const { sequelize, Books } = require("./models");
+const Sequelize = require("sequelize");
+const Op = Sequelize.Op;
 
 (async () => {
   await sequelize.sync();

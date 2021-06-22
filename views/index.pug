@@ -1,11 +1,18 @@
 extends layout
 
 block content
+  section 
+    form(action="/books/search")
+      input(type="submit" value="Search")
+      input(type="search" name="term" placeholder="Find a book")
+
   h1 Books
   p 
-    a.button(href='/books/new') Create New Book
-    if (q)
-      a.button(href='/books') To the List
+    
+    if (term)
+      a.button(href='/books') Head BACK!
+    else 
+      a.button(href='/books/new') Create New Book
   
     table   
       thead 
