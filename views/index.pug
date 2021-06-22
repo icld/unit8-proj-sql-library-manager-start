@@ -4,6 +4,8 @@ block content
   h1 Books
   p 
     a.button(href='/books/new') Create New Book
+    if (q)
+      a.button(href='/books') To the List
   
     table   
       thead 
@@ -18,7 +20,7 @@ block content
           tr  
             td #{book.id} 
             td
-              a(href='/books/${book.id}') #{book.title}     
+              a(href=`/books/${book.id}`) #{book.title}     
             td #{book.author}
             td #{book.genre}  
             td #{book.year}
