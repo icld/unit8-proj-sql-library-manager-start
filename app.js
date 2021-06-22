@@ -10,6 +10,7 @@ const { sequelize, Books } = require("./models");
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 
+//sync db and authenticate connecton to db
 (async () => {
   await sequelize.sync();
   try {

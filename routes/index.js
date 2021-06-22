@@ -16,44 +16,42 @@ function asyncHandler(cb) {
   };
 }
 
+// error handler
 const errorHandler = (errStatus, msg) => {
   const err = new Error(msg);
   err.status = errStatus;
   throw err;
 };
 
-/* GET home page. */
+// get home page, redirect to /books
 router.get(
   "/",
   asyncHandler(async (req, res) => {
-    // const books = await Book.findAll();
-    // throw Error(500);
-    // const allBooks = books.toJSON()
-    // console.log(books);
-
     res.redirect("/books");
   })
 );
 
+// get books route, and request books from db, with pagination limits etc.
 router.get(
   "/books",
   asyncHandler(async (req, res, next) => {
-    const page = req.query.page;
-    !page ? res.redirect("?page=1") : null;
+    let page = req.query.page;
+    !page || page <= 0 ? res.redirect("?page=1") : null;
 
     const books = await Book.findAll({
       order: [["ID", "ASC"]],
-      offset: (page - 1) * 10,
-      limit: 10,
+      offset: (page - 1) * 6,
+      limit: 6,
     });
     const results = books.length;
     console.log(results, page);
-    results < 1
-      ? res.redirect("?page=1")
+    results <= 0
+      ? res.redirect("?page=1") + (page = 1)
       : res.render("index", { books, page });
   })
 );
 
+//render new-book form
 router.get(
   "/books/new",
   asyncHandler(async (req, res) => {
@@ -61,6 +59,7 @@ router.get(
   })
 );
 
+//post new-book form and build book
 router.post(
   "/books/new",
   asyncHandler(async (req, res) => {
@@ -84,7 +83,7 @@ router.post(
   })
 );
 
-//search
+//search db
 router.get(
   "/books/search",
   asyncHandler(async (req, res, next) => {
@@ -109,6 +108,7 @@ router.get(
   })
 );
 
+// get individual book
 router.get(
   "/books/:id",
   asyncHandler(async (req, res) => {
@@ -121,7 +121,7 @@ router.get(
   })
 );
 
-// update book
+// update book from form
 router.post(
   "/books/:id",
   asyncHandler(async (req, res, next) => {
@@ -150,7 +150,7 @@ router.post(
   })
 );
 
-//delete
+//delete book
 router.post(
   "/books/:id/delete",
   asyncHandler(async (req, res, next) => {
@@ -163,14 +163,5 @@ router.post(
     }
   })
 );
-
-//search?
-
-// app.get("/books/search", (req, res) => {
-
-//   Books.findAll({ where: { title: { [Op.like]: '%' + term + '%' } } })
-//     .then(Books => res.render('index', {Books})
-//   .catch()
-// });
 
 module.exports = router;

@@ -1,34 +1,39 @@
 extends layout
 
 block content
-  section 
-    form(action="/books/search")
-      input(type="submit" value="Search")
-      input(type="search" name="term" placeholder="Find a book")
+  div
+    section 
+      form.search(action="/books/search")
+        input(type="submit" value="Search")
+        input(type="search" name="term" placeholder="Find a book")
 
-  h1 Books
-  p 
-    
-    if (term)
-      a.button(href='/books') Head BACK!
-    else 
-      a.button(href='/books/new') Create New Book
-  
-    table   
-      thead 
-        tr  
-          th id 
-          th Title 
-          th Author 
-          th Genre 
-          th Year 
-      tbody 
-        each book in books  
+    h1 Books
+    p 
+      
+      if (term)
+        a.button(href='/books') Head BACK!
+      else 
+        a.button(href='/books/new') Create New Book
+    .table-div 
+      table   
+        thead 
           tr  
-            td #{book.id} 
-            td
-              a(href=`/books/${book.id}`) #{book.title}     
-            td #{book.author}
-            td #{book.genre}  
-            td #{book.year}
-          
+            th Id 
+            th Title 
+            th Author 
+            th Genre 
+            th Year 
+        tbody 
+          each book in books  
+            tr  
+              td #{book.id} 
+              td
+                a(href=`/books/${book.id}`) #{book.title}     
+              td #{book.author}
+              td #{book.genre}  
+              td #{book.year}
+    div
+    if (!term )
+      a.button(href=`/books?page=${+page - 1 }`).prev Prev 
+      a.button(href=`/books?page=${+page + 1}`).next Next 
+            
