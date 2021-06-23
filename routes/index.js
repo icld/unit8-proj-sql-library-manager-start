@@ -44,7 +44,6 @@ router.get(
       limit: 6,
     });
     const results = books.length;
-    console.log(results, page);
     results <= 0
       ? res.redirect("?page=1") + (page = 1)
       : res.render("index", { books, page });
@@ -88,7 +87,6 @@ router.get(
   "/books/search",
   asyncHandler(async (req, res, next) => {
     const { term } = req.query;
-    console.log(term);
     const books = await Book.findAll({
       where: {
         [Op.or]: [
@@ -99,7 +97,6 @@ router.get(
         ],
       },
     });
-    console.log(books);
     if (books) {
       res.render("index", { books, term });
     } else {
